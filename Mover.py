@@ -17,7 +17,7 @@ for i in walk(start_path):
             c += 1
             change_date_photo = from_timestamp(int(str(stat(f'{i[0]}/{j}').st_mtime).split('.')[0])).__format__('MMMM YYYY')
             try:
-                if load(f'{i[0]}/{j}')['Exif'] and 'прованс' not in i[0].lower():
+                if load(f'{i[0]}/{j}')['Exif']:
                     y, m, d = [int(i.strip("b'")) for i in str(load(f'{i[0]}/{j}')['Exif'][36867].split()[0]).split(':')]
                     date_photo = date(y, m, d).__format__('MMMM YYYY')
 
@@ -31,9 +31,11 @@ for i in walk(start_path):
                     if c % 100 == 0:
                         print(c)
             except piexif._exceptions.InvalidImageDataError:
-                print('Type error')
+                print('Type error:', f'{i[0]}/{j}')
             except struct.error:
-                print('Struct error')
+                print('Struct error:', f'{i[0]}/{j}')
+            except KeyError:
+                print('No data-key:', f'{i[0]}/{j}')
             else:
                 if not load(f'{i[0]}/{j}')['Exif']:
                     if not path.exists(f'{sorted_path}/{change_date_photo.split()[1]}'):
