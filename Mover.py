@@ -1,3 +1,4 @@
+import struct
 from os import *
 
 from pendulum import *
@@ -24,12 +25,15 @@ for i in walk(start_path):
                         mkdir(f'{sorted_path}/{date_photo.split()[1]}')
                     if not path.exists(f'{sorted_path}/{date_photo.split()[1]}/{date_photo.split()[0]}'):
                         mkdir(f'{sorted_path}/{date_photo.split()[1]}/{date_photo.split()[0]}')
-                    copy(f'{i[0]}/{j}', f'{sorted_path}/{date_photo.split()[1]}/{date_photo.split()[0]}/{j}')
+                    if not path.exists(f'{sorted_path}/{date_photo.split()[1]}/{date_photo.split()[0]}/{j}'):
+                        copy(f'{i[0]}/{j}', f'{sorted_path}/{date_photo.split()[1]}/{date_photo.split()[0]}/{j}')
 
                     if c % 100 == 0:
                         print(c)
             except piexif._exceptions.InvalidImageDataError:
                 print('Type error')
+            except struct.error:
+                print('Struct error')
             else:
                 if not load(f'{i[0]}/{j}')['Exif']:
                     if not path.exists(f'{sorted_path}/{change_date_photo.split()[1]}'):
